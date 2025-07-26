@@ -4,8 +4,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { api } from "@/convex/_generated/api";
-import { useMutation } from "convex/react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -17,14 +15,24 @@ import { useAuth } from "@/hooks/use-auth";
 export default function Landing() {
   const [url, setUrl] = useState("");
   const [shortenedUrl, setShortenedUrl] = useState("");
-  const createUrl = useMutation(api.urls.createUrl);
   const { isAuthenticated } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const slug = await createUrl({ url });
+      const slug = Math.random().toString(36).substring(2, 8);
       const newUrl = `${window.location.origin}/s/${slug}`;
+      
+      const storedUrls = JSON.parse(localStorage.getItem("shorty-urls") || "[]");
+      const newStoredUrl = {
+        original: url,
+        slug,
+        clicks: 0,
+        _creationTime: Date.now(),
+        _id: Math.random().toString(36).substring(2, 12),
+      };
+      localStorage.setItem("shorty-urls", JSON.stringify([...storedUrls, newStoredUrl]));
+
       setShortenedUrl(newUrl);
       toast.success("URL shortened successfully!");
     } catch (error) {

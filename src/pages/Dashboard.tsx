@@ -2,8 +2,6 @@
 // This is the entry point for users who have just signed in
 
 import { Protected } from "@/lib/protected-page";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import {
   Card,
   CardContent,
@@ -26,9 +24,15 @@ import { motion } from "framer-motion";
 import { UserButton } from "@/components/auth/UserButton";
 import { Link } from "react-router";
 import { formatDistanceToNow } from "date-fns";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
-  const urls = useQuery(api.urls.getUrlsForUser);
+  const [urls, setUrls] = useState<any[]>([]);
+
+  useEffect(() => {
+    const storedUrls = JSON.parse(localStorage.getItem("shorty-urls") || "[]");
+    setUrls(storedUrls.sort((a: any, b: any) => b._creationTime - a._creationTime));
+  }, []);
 
   const handleCopy = (slug: string) => {
     const url = `${window.location.origin}/s/${slug}`;

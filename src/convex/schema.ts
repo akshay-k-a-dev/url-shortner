@@ -33,14 +33,6 @@ const schema = defineSchema(
     }).index("email", ["email"]), // index for the email. do not remove or modify
 
     // add other tables here
-    shortenedUrls: defineTable({
-      userId: v.optional(v.id("users")),
-      original: v.string(),
-      slug: v.string(),
-      clicks: v.number(),
-    })
-    .index("by_slug", ["slug"])
-    .index("by_userId", ["userId"]),
   },
   {
     schemaValidation: false,
