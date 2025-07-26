@@ -16,7 +16,7 @@ export default function Redirect() {
         localStorage.setItem("shorty-urls", JSON.stringify(storedUrls));
         window.location.href = urlData.original;
       } else {
-        navigate("/not-found");
+        navigate("/");
       }
     }
   }, [slug, navigate]);

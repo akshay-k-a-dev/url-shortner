@@ -20,12 +20,19 @@ export default function Landing() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      let originalUrl = url;
+      if (!/^https/i.test(originalUrl) && !/^http/i.test(originalUrl)) {
+        originalUrl = `https://${originalUrl}`;
+      }
+      // Validate URL
+      new URL(originalUrl);
+
       const slug = Math.random().toString(36).substring(2, 8);
       const newUrl = `${window.location.origin}/s/${slug}`;
       
       const storedUrls = JSON.parse(localStorage.getItem("shorty-urls") || "[]");
       const newStoredUrl = {
-        original: url,
+        original: originalUrl,
         slug,
         clicks: 0,
         _creationTime: Date.now(),
