@@ -51,30 +51,33 @@ export default function Landing() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <header className="py-4 px-6 flex justify-between items-center">
+    <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
+      <header className="py-4 px-6 flex justify-between items-center bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
         <div className="flex items-center gap-2">
-          <LinkIcon className="h-6 w-6 text-primary" />
-          <h1 className="text-xl font-bold tracking-tight">Shorty</h1>
+          <div className="p-2 bg-gray-800 rounded-lg">
+            <LinkIcon className="h-5 w-5 text-white" />
+          </div>
+          <h1 className="text-xl font-bold tracking-tight text-gray-900">Shorty</h1>
         </div>
         <div className="flex items-center gap-4">
-            <Button asChild variant="outline">
-                <Link to="/dashboard">My Links</Link>
-            </Button>
+          <Button asChild variant="ghost" className="hover:bg-gray-100">
+            <Link to="/dashboard">My Links</Link>
+          </Button>
         </div>
       </header>
-      <main className="flex-1 flex flex-col items-center justify-center text-center p-4">
+      
+      <main className="flex-1 flex flex-col items-center justify-center text-center p-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="max-w-3xl"
+          className="max-w-4xl mx-auto"
         >
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-            The Easiest URL Shortener.
+          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent">
+            Effortless URL Shortening
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-            Create short, memorable links in seconds. Perfect for sharing on social media, in emails, or anywhere you need a compact link.
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed">
+            Create clean, memorable links. Perfect for sharing on social media, in emails, or anywhere you need a compact and elegant link.
           </p>
         </motion.div>
 
@@ -82,43 +85,56 @@ export default function Landing() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="w-full max-w-lg"
+          className="w-full max-w-2xl"
         >
-          <form onSubmit={handleSubmit} className="flex gap-2">
-            <Input
-              type="text"
-              placeholder="Enter your URL (e.g., google.com or https://google.com)"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              required
-              className="flex-1 text-base py-6"
-            />
-            <Button type="submit" size="lg">Shorten</Button>
-          </form>
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
+              <Input
+                type="text"
+                placeholder="Enter your long URL here"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                required
+                className="flex-1 text-lg py-6 px-4 border-2 border-gray-200 rounded-xl focus:border-gray-800 focus:ring-gray-800"
+              />
+              <Button 
+                type="submit" 
+                size="lg" 
+                className="bg-gray-800 hover:bg-gray-900 text-white px-8 py-6 rounded-xl font-semibold text-lg shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                Shorten
+              </Button>
+            </form>
 
-          {shortenedUrl && (
-            <motion.div 
+            {shortenedUrl && (
+              <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 flex items-center gap-2 p-2 border rounded-md bg-muted/50"
-            >
-              <a
-                href={shortenedUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary font-medium truncate"
+                className="mt-6 flex items-center gap-3 p-4 bg-gray-100 border-2 border-gray-200 rounded-xl"
               >
-                {shortenedUrl}
-              </a>
-              <Button variant="ghost" size="icon" onClick={handleCopy}>
-                <Copy className="h-4 w-4" />
-              </Button>
-            </motion.div>
-          )}
+                <a
+                  href={shortenedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-800 font-medium truncate flex-1 hover:underline"
+                >
+                  {shortenedUrl}
+                </a>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={handleCopy}
+                  className="text-gray-600 hover:bg-gray-200 rounded-lg"
+                >
+                  <Copy className="h-5 w-5" />
+                </Button>
+              </motion.div>
+            )}
+          </div>
         </motion.div>
       </main>
-      <footer className="text-center p-4 text-sm text-muted-foreground">
-        Built with <a href="https://vly.ai" target="_blank" rel="noopener noreferrer" className="underline">vly.ai</a>
+      <footer className="text-center p-6 text-sm text-gray-500">
+        © {new Date().getFullYear()} Shorty. All Rights Reserved.
       </footer>
     </div>
   );
