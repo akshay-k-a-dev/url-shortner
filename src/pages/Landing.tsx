@@ -21,26 +21,29 @@ export default function Landing() {
         originalUrl = `https://${originalUrl}`;
       }
       
-      const encodedUrl = encodeURIComponent(originalUrl);
-      const apiUrl = `https://is.gd/create.php?format=simple&url=${encodedUrl}`;
+      // Use our proxy endpoint instead of calling is.gd directly
+      const response = await fetch('/api/shorten', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: originalUrl }),
+      });
 
-      const response = await fetch(apiUrl);
       if (!response.ok) {
-        throw new Error("Failed to shorten URL. The service may be unavailable.");
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to shorten URL');
       }
-      
-      const newUrl = await response.text();
 
-      if (newUrl.startsWith("Error")) {
-        throw new Error(newUrl);
-      }
+      const data = await response.json();
+      const newUrl = data.shortUrl;
 
       const storedUrls = JSON.parse(localStorage.getItem("shorty-urls") || "[]");
       const newStoredUrl = {
         original: originalUrl,
-        slug: newUrl.split('/').pop(), // not a real slug, but works for display
+        slug: newUrl.split('/').pop(),
         shortUrl: newUrl,
-        clicks: 0, // is.gd tracks this, but we can't see it
+        clicks: 0,
         _creationTime: Date.now(),
         _id: Math.random().toString(36).substring(2, 12),
       };
