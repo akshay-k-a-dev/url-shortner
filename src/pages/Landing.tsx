@@ -51,16 +51,16 @@ export default function Landing() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
-      <header className="py-4 px-6 flex justify-between items-center bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
+    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+      <header className="py-4 px-6 flex justify-between items-center bg-gray-900/80 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-10">
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-gray-800 rounded-lg">
+          <div className="p-2 bg-indigo-600 rounded-lg">
             <LinkIcon className="h-5 w-5 text-white" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-gray-900">Shorty</h1>
+          <h1 className="text-xl font-bold tracking-tight text-white">Shorty</h1>
         </div>
         <div className="flex items-center gap-4">
-          <Button asChild variant="ghost" className="hover:bg-gray-100">
+          <Button asChild variant="ghost" className="hover:bg-gray-800 text-white">
             <Link to="/dashboard">My Links</Link>
           </Button>
         </div>
@@ -73,10 +73,10 @@ export default function Landing() {
           transition={{ duration: 0.5 }}
           className="max-w-4xl mx-auto"
         >
-          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent">
+          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
             Effortless URL Shortening
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed">
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed">
             Create clean, memorable links. Perfect for sharing on social media, in emails, or anywhere you need a compact and elegant link.
           </p>
         </motion.div>
@@ -87,7 +87,7 @@ export default function Landing() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="w-full max-w-2xl"
         >
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+          <div className="bg-gray-800/50 rounded-2xl shadow-lg p-8 border border-gray-700">
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
               <Input
                 type="text"
@@ -95,12 +95,12 @@ export default function Landing() {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 required
-                className="flex-1 text-lg py-6 px-4 border-2 border-gray-200 rounded-xl focus:border-gray-800 focus:ring-gray-800"
+                className="flex-1 text-lg py-6 px-4 bg-gray-800 border-2 border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 text-white"
               />
               <Button 
                 type="submit" 
                 size="lg" 
-                className="bg-gray-800 hover:bg-gray-900 text-white px-8 py-6 rounded-xl font-semibold text-lg shadow-md hover:shadow-lg transition-all duration-200"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-6 rounded-xl font-semibold text-lg shadow-md hover:shadow-lg transition-all duration-200"
               >
                 Shorten
               </Button>
@@ -110,13 +110,13 @@ export default function Landing() {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-6 flex items-center gap-3 p-4 bg-gray-100 border-2 border-gray-200 rounded-xl"
+                className="mt-6 flex items-center gap-3 p-4 bg-gray-800 border-2 border-gray-700 rounded-xl"
               >
                 <a
                   href={shortenedUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-800 font-medium truncate flex-1 hover:underline"
+                  className="text-indigo-400 font-medium truncate flex-1 hover:underline"
                 >
                   {shortenedUrl}
                 </a>
@@ -124,7 +124,7 @@ export default function Landing() {
                   variant="ghost" 
                   size="icon" 
                   onClick={handleCopy}
-                  className="text-gray-600 hover:bg-gray-200 rounded-lg"
+                  className="text-gray-400 hover:bg-gray-700 rounded-lg"
                 >
                   <Copy className="h-5 w-5" />
                 </Button>
@@ -134,7 +134,7 @@ export default function Landing() {
         </motion.div>
       </main>
       <footer className="text-center p-6 text-sm text-gray-500">
-        © {new Date().getFullYear()} Shorty. All Rights Reserved.
+        Copyleft © {new Date().getFullYear()} Shorty. All wrongs reserved.
       </footer>
     </div>
   );

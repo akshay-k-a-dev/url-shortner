@@ -39,13 +39,13 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
-      <header className="py-4 px-6 flex justify-between items-center bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
+    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+      <header className="py-4 px-6 flex justify-between items-center bg-gray-900/80 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-10">
         <Link to="/" className="flex items-center gap-2">
-          <div className="p-2 bg-gray-800 rounded-lg">
+          <div className="p-2 bg-indigo-600 rounded-lg">
             <LinkIcon className="h-5 w-5 text-white" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-gray-900">Shorty Dashboard</h1>
+          <h1 className="text-xl font-bold tracking-tight text-white">Shorty Dashboard</h1>
         </Link>
       </header>
       
@@ -56,10 +56,10 @@ export default function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Card className="bg-white/90 backdrop-blur-sm border-gray-200 shadow-lg">
-              <CardHeader className="border-b border-gray-200">
-                <CardTitle className="text-2xl text-gray-900">Your Links</CardTitle>
-                <CardDescription className="text-gray-600">
+            <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700 shadow-lg">
+              <CardHeader className="border-b border-gray-700">
+                <CardTitle className="text-2xl text-white">Your Links</CardTitle>
+                <CardDescription className="text-gray-400">
                   Manage and track all your shortened links
                 </CardDescription>
               </CardHeader>
@@ -68,23 +68,23 @@ export default function Dashboard() {
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow className="border-gray-200 hover:bg-transparent">
-                          <TableHead className="font-semibold text-gray-700">Original URL</TableHead>
-                          <TableHead className="font-semibold text-gray-700">Short URL</TableHead>
-                          <TableHead className="font-semibold text-gray-700">Clicks</TableHead>
-                          <TableHead className="font-semibold text-gray-700">Created</TableHead>
-                          <TableHead className="text-right font-semibold text-gray-700">Actions</TableHead>
+                        <TableRow className="border-gray-700 hover:bg-transparent">
+                          <TableHead className="font-semibold text-gray-300">Original URL</TableHead>
+                          <TableHead className="font-semibold text-gray-300">Short URL</TableHead>
+                          <TableHead className="font-semibold text-gray-300">Clicks</TableHead>
+                          <TableHead className="font-semibold text-gray-300">Created</TableHead>
+                          <TableHead className="text-right font-semibold text-gray-300">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {urls.map((url) => (
-                          <TableRow key={url._id} className="border-gray-100 hover:bg-gray-50">
+                          <TableRow key={url._id} className="border-gray-800 hover:bg-gray-800/70">
                             <TableCell className="truncate max-w-xs">
                               <a
                                 href={url.original}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-gray-800 hover:underline font-medium"
+                                className="text-gray-300 hover:underline font-medium"
                               >
                                 {url.original}
                               </a>
@@ -94,17 +94,17 @@ export default function Dashboard() {
                                 href={`${window.location.origin}/s/${url.slug}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-600 hover:underline font-medium"
+                                className="text-indigo-400 hover:underline font-medium"
                               >
                                 {`${window.location.host}/s/${url.slug}`}
                               </a>
                             </TableCell>
                             <TableCell>
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-200">
                                 {url.clicks}
                               </span>
                             </TableCell>
-                            <TableCell className="text-gray-600">
+                            <TableCell className="text-gray-400">
                               {formatDistanceToNow(new Date(url._creationTime), {
                                 addSuffix: true,
                               })}
@@ -114,7 +114,7 @@ export default function Dashboard() {
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => handleCopy(url.slug)}
-                                className="text-gray-600 hover:bg-gray-200"
+                                className="text-gray-400 hover:bg-gray-700"
                               >
                                 <Copy className="h-4 w-4" />
                               </Button>
@@ -123,7 +123,7 @@ export default function Dashboard() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
-                                <Button variant="ghost" size="icon" className="text-gray-600 hover:bg-gray-200">
+                                <Button variant="ghost" size="icon" className="text-gray-400 hover:bg-gray-700">
                                   <ExternalLink className="h-4 w-4" />
                                 </Button>
                               </a>
@@ -135,12 +135,12 @@ export default function Dashboard() {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <LinkIcon className="h-12 w-12 text-gray-400" />
+                    <div className="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <LinkIcon className="h-12 w-12 text-gray-500" />
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">No URLs yet</h3>
-                    <p className="text-gray-600 mb-6">You haven't shortened any URLs yet. Create your first one!</p>
-                    <Button asChild className="bg-gray-800 hover:bg-gray-900">
+                    <h3 className="text-xl font-semibold text-white mb-2">No URLs yet</h3>
+                    <p className="text-gray-400 mb-6">You haven't shortened any URLs yet. Create your first one!</p>
+                    <Button asChild className="bg-indigo-600 hover:bg-indigo-700">
                       <Link to="/">Create Short URL</Link>
                     </Button>
                   </div>
