@@ -51,29 +51,32 @@ export default function Landing() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <header className="py-4 px-6 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <LinkIcon className="h-6 w-6 text-primary" />
-          <h1 className="text-xl font-bold tracking-tight">Shorty</h1>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <header className="py-6 px-6 flex justify-between items-center bg-white/80 backdrop-blur-sm border-b border-gray-200">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-blue-600 rounded-lg">
+            <LinkIcon className="h-6 w-6 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900">Shorty</h1>
         </div>
         <div className="flex items-center gap-4">
-            <Button asChild variant="outline">
-                <Link to="/dashboard">My Links</Link>
-            </Button>
+          <Button asChild variant="outline" className="border-blue-200 hover:bg-blue-50">
+            <Link to="/dashboard">My Links</Link>
+          </Button>
         </div>
       </header>
-      <main className="flex-1 flex flex-col items-center justify-center text-center p-4">
+      
+      <main className="flex-1 flex flex-col items-center justify-center text-center p-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="max-w-3xl"
+          className="max-w-4xl mx-auto"
         >
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-            The Easiest URL Shortener.
+          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            The Easiest URL Shortener
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed">
             Create short, memorable links in seconds. Perfect for sharing on social media, in emails, or anywhere you need a compact link.
           </p>
         </motion.div>
@@ -82,44 +85,85 @@ export default function Landing() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="w-full max-w-lg"
+          className="w-full max-w-2xl"
         >
-          <form onSubmit={handleSubmit} className="flex gap-2">
-            <Input
-              type="text"
-              placeholder="Enter your URL (e.g., google.com or https://google.com)"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              required
-              className="flex-1 text-base py-6"
-            />
-            <Button type="submit" size="lg">Shorten</Button>
-          </form>
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
+              <Input
+                type="text"
+                placeholder="Enter your URL (e.g., google.com or https://google.com)"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                required
+                className="flex-1 text-lg py-6 px-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-blue-500"
+              />
+              <Button 
+                type="submit" 
+                size="lg" 
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-6 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                Shorten
+              </Button>
+            </form>
 
-          {shortenedUrl && (
-            <motion.div 
+            {shortenedUrl && (
+              <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 flex items-center gap-2 p-2 border rounded-md bg-muted/50"
-            >
-              <a
-                href={shortenedUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary font-medium truncate"
+                className="mt-6 flex items-center gap-3 p-4 bg-green-50 border-2 border-green-200 rounded-xl"
               >
-                {shortenedUrl}
-              </a>
-              <Button variant="ghost" size="icon" onClick={handleCopy}>
-                <Copy className="h-4 w-4" />
-              </Button>
-            </motion.div>
-          )}
+                <a
+                  href={shortenedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green-700 font-medium truncate flex-1 hover:underline"
+                >
+                  {shortenedUrl}
+                </a>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={handleCopy}
+                  className="text-green-600 hover:bg-green-100 rounded-lg"
+                >
+                  <Copy className="h-5 w-5" />
+                </Button>
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
+        >
+          <div className="text-center p-6">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <LinkIcon className="h-8 w-8 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Lightning Fast</h3>
+            <p className="text-gray-600">Generate short links instantly with our optimized system</p>
+          </div>
+          
+          <div className="text-center p-6">
+            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Copy className="h-8 w-8 text-purple-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Easy to Share</h3>
+            <p className="text-gray-600">One-click copying makes sharing effortless</p>
+          </div>
+          
+          <div className="text-center p-6">
+            <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <LinkIcon className="h-8 w-8 text-indigo-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Track Clicks</h3>
+            <p className="text-gray-600">Monitor your link performance with built-in analytics</p>
+          </div>
         </motion.div>
       </main>
-      <footer className="text-center p-4 text-sm text-muted-foreground">
-        Built with <a href="https://vly.ai" target="_blank" rel="noopener noreferrer" className="underline">vly.ai</a>
-      </footer>
     </div>
   );
 }
