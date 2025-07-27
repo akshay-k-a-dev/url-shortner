@@ -14,28 +14,4 @@ export default defineConfig({
   build: {
     sourcemap: false,
   },
-  esbuild: {
-    tsconfigRaw: {
-      compilerOptions: {
-        target: "ESNext",
-        lib: ["DOM", "DOM.Iterable", "ESNext"],
-        skipLibCheck: true,
-        allowSyntheticDefaultImports: true,
-        strict: true,
-        forceConsistentCasingInFileNames: true,
-        module: "ESNext",
-        moduleResolution": "Bundler",
-        resolveJsonModule: true,
-        isolatedModules: true,
-        noEmit: true,
-        jsx: "react-jsx",
-        baseUrl: ".",
-        paths: {
-          "@/*": ["./src/*"]
-        }
-      },
-      include: ["src"],
-      exclude: ["node_modules", "dist", "build"]
-    }
-  }
 });
