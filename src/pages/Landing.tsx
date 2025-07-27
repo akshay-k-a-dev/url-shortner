@@ -90,8 +90,8 @@ export default function Landing() {
         >
           <form onSubmit={handleSubmit} className="flex gap-2">
             <Input
-              type="url"
-              placeholder="https://your-long-url.com"
+              type="text"
+              placeholder="Enter your URL (e.g., google.com or https://google.com)"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               required
