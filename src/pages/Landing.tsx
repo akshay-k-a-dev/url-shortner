@@ -9,25 +9,38 @@ import { Link } from "react-router";
 export default function Landing() {
   const [url, setUrl] = useState("");
   const [shortenedUrl, setShortenedUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+    setShortenedUrl("");
     try {
       let originalUrl = url;
-      if (!/^https/i.test(originalUrl) && !/^http/i.test(originalUrl)) {
+      if (!/^https?/i.test(originalUrl)) {
         originalUrl = `https://${originalUrl}`;
       }
-      // Validate URL
-      new URL(originalUrl);
-
-      const slug = Math.random().toString(36).substring(2, 8);
-      const newUrl = `${window.location.origin}/s/${slug}`;
       
+      const encodedUrl = encodeURIComponent(originalUrl);
+      const apiUrl = `https://is.gd/create.php?format=simple&url=${encodedUrl}`;
+
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error("Failed to shorten URL. The service may be unavailable.");
+      }
+      
+      const newUrl = await response.text();
+
+      if (newUrl.startsWith("Error")) {
+        throw new Error(newUrl);
+      }
+
       const storedUrls = JSON.parse(localStorage.getItem("shorty-urls") || "[]");
       const newStoredUrl = {
         original: originalUrl,
-        slug,
-        clicks: 0,
+        slug: newUrl.split('/').pop(), // not a real slug, but works for display
+        shortUrl: newUrl,
+        clicks: 0, // is.gd tracks this, but we can't see it
         _creationTime: Date.now(),
         _id: Math.random().toString(36).substring(2, 12),
       };
@@ -35,9 +48,11 @@ export default function Landing() {
 
       setShortenedUrl(newUrl);
       toast.success("URL shortened successfully!");
-    } catch (error) {
-      toast.error("Failed to shorten URL. Please enter a valid URL.");
+    } catch (error: any) {
+      toast.error(error.message || "An unknown error occurred.");
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -79,12 +94,14 @@ export default function Landing() {
             onChange={(e) => setUrl(e.target.value)}
             required
             className="flex-grow px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={isLoading}
           />
           <Button
             type="submit"
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+            disabled={isLoading}
           >
-            Shorten
+            {isLoading ? "..." : "Shorten"}
           </Button>
         </form>
 

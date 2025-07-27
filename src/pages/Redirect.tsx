@@ -1,38 +1,16 @@
 import { useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { Loader2 } from "lucide-react";
 
 export default function Redirect() {
-  const { slug } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (slug) {
-      try {
-        const storedUrls = JSON.parse(localStorage.getItem("shorty-urls") || "[]");
-        const urlData = storedUrls.find((u: any) => u.slug === slug);
-
-        if (urlData && urlData.original) {
-          // Increment click count
-          const updatedUrls = storedUrls.map((u: any) => 
-            u.slug === slug ? { ...u, clicks: u.clicks + 1 } : u
-          );
-          localStorage.setItem("shorty-urls", JSON.stringify(updatedUrls));
-          
-          // Redirect to the original URL
-          window.location.replace(urlData.original);
-        } else {
-          // If URL not found, redirect to home page
-          navigate("/");
-        }
-      } catch (error) {
-        console.error("Failed to parse URLs from localStorage", error);
-        navigate("/");
-      }
-    } else {
-      navigate("/");
-    }
-  }, [slug, navigate]);
+    // Since we are using is.gd, we don't need a custom redirect page.
+    // is.gd handles the redirect for us.
+    // This page is now just a fallback.
+    navigate("/");
+  }, [navigate]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center">
