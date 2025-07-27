@@ -1,7 +1,3 @@
-// TODO: THIS IS THE LANDING PAGE THAT THE USER WILL ALWAYS FIRST SEE. make sure to update this page
-// Make sure that the marketing text always reflects the app marketing. create an aesthetic properly-designed landing page that fits the theme of the app
-// start completely from scratch to make this landing page using aesthetic design principles and tailwind styling to create a unique and thematic landing page.
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
@@ -51,91 +47,81 @@ export default function Landing() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
-      <header className="py-4 px-6 flex justify-between items-center bg-gray-900/80 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-10">
-        <div className="flex items-center gap-2">
-          <div className="p-2 bg-indigo-600 rounded-lg">
-            <LinkIcon className="h-5 w-5 text-white" />
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-md w-full bg-white rounded-xl shadow-lg p-6 space-y-6"
+      >
+        {/* Logo and Title */}
+        <div className="flex items-center space-x-2">
+          <div className="p-2 bg-blue-500 rounded-lg">
+            <LinkIcon className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-white">Shorty</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Shorty</h1>
         </div>
-        <div className="flex items-center gap-4">
-          <Button asChild variant="ghost" className="hover:bg-gray-800 text-white">
-            <Link to="/dashboard">My Links</Link>
-          </Button>
-        </div>
-      </header>
-      
-      <main className="flex-1 flex flex-col items-center justify-center text-center p-6">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-4xl mx-auto"
-        >
-          <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-            Effortless URL Shortening
-          </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Create clean, memorable links. Perfect for sharing on social media, in emails, or anywhere you need a compact and elegant link.
+
+        {/* Subtitle */}
+        <div>
+          <h2 className="text-lg font-semibold text-gray-700">The Easiest URL Shortener.</h2>
+          <p className="text-sm text-gray-500">
+            Create short, memorable links in seconds. Perfect for sharing on social media, in emails, or anywhere you need a compact link.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="w-full max-w-2xl"
-        >
-          <div className="bg-gray-800/50 rounded-2xl shadow-lg p-8 border border-gray-700">
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
-              <Input
-                type="text"
-                placeholder="Enter your long URL here"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                required
-                className="flex-1 text-lg py-6 px-4 bg-gray-800 border-2 border-gray-600 rounded-xl focus:border-indigo-500 focus:ring-indigo-500 text-white"
-              />
-              <Button 
-                type="submit" 
-                size="lg" 
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-6 rounded-xl font-semibold text-lg shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                Shorten
-              </Button>
-            </form>
+        {/* Input Form */}
+        <form onSubmit={handleSubmit} className="flex space-x-2">
+          <Input
+            type="text"
+            placeholder="Enter your URL (e.g., google.com)"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            required
+            className="flex-grow px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <Button
+            type="submit"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+          >
+            Shorten
+          </Button>
+        </form>
 
-            {shortenedUrl && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-6 flex items-center gap-3 p-4 bg-gray-800 border-2 border-gray-700 rounded-xl"
-              >
-                <a
-                  href={shortenedUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-indigo-400 font-medium truncate flex-1 hover:underline"
-                >
-                  {shortenedUrl}
-                </a>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={handleCopy}
-                  className="text-gray-400 hover:bg-gray-700 rounded-lg"
-                >
-                  <Copy className="h-5 w-5" />
-                </Button>
-              </motion.div>
-            )}
-          </div>
-        </motion.div>
-      </main>
-      <footer className="text-center p-6 text-sm text-gray-500">
-        Copyleft © {new Date().getFullYear()} Shorty. All wrongs reserved.
-      </footer>
+        {/* Shortened URL Display */}
+        {shortenedUrl && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-6 flex items-center gap-3 p-3 bg-gray-100 border border-gray-200 rounded-md"
+          >
+            <a
+              href={shortenedUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 font-medium truncate flex-1 hover:underline"
+            >
+              {shortenedUrl}
+            </a>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={handleCopy}
+              className="text-gray-500 hover:bg-gray-200 rounded-lg"
+            >
+              <Copy className="h-5 w-5" />
+            </Button>
+          </motion.div>
+        )}
+
+        {/* Footer */}
+        <div className="flex justify-between items-center pt-4 border-t border-gray-200">
+            <p className="text-xs text-gray-400">Copyleft © {new Date().getFullYear()}. All wrongs reserved.</p>
+            <Button asChild variant="link" className="text-xs text-blue-500 p-0 h-auto">
+                <Link to="/dashboard">My Links</Link>
+            </Button>
+        </div>
+      </motion.div>
     </div>
   );
 }
