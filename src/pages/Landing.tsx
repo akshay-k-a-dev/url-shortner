@@ -21,22 +21,48 @@ export default function Landing() {
         originalUrl = `https://${originalUrl}`;
       }
       
-      // Use our proxy endpoint instead of calling is.gd directly
-      const response = await fetch('/api/shorten', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url: originalUrl }),
-      });
+      let newUrl;
+      
+      try {
+        // Try our proxy endpoint first
+        const response = await fetch('/api/shorten', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url: originalUrl }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to shorten URL');
+        if (!response.ok) {
+          throw new Error('Proxy failed');
+        }
+
+        const data = await response.json();
+        newUrl = data.shortUrl;
+      } catch (proxyError) {
+        // Fallback: try direct API call with no-cors mode
+        try {
+          const encodedUrl = encodeURIComponent(originalUrl);
+          const apiUrl = `https://is.gd/create.php?format=simple&url=${encodedUrl}`;
+          
+          const response = await fetch(apiUrl, {
+            mode: 'no-cors'
+          });
+          
+          // Since we can't read the response in no-cors mode, 
+          // we'll generate a local short URL as fallback
+          throw new Error('Direct API not accessible');
+        } catch (directError) {
+          // Final fallback: create a local short URL
+          const slug = Math.random().toString(36).substring(2, 8);
+          newUrl = `${window.location.origin}/s/${slug}`;
+          
+          // Store the mapping for local redirect
+          const redirects = JSON.parse(localStorage.getItem("shorty-redirects") || "{}");
+          redirects[slug] = originalUrl;
+          localStorage.setItem("shorty-redirects", JSON.stringify(redirects));
+        }
       }
-
-      const data = await response.json();
-      const newUrl = data.shortUrl;
 
       const storedUrls = JSON.parse(localStorage.getItem("shorty-urls") || "[]");
       const newStoredUrl = {

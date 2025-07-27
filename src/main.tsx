@@ -43,6 +43,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="*" element={<NotFound />} />
           <Route path="/" element={<Landing />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/s/:slug" element={<Redirect />} />
         </Routes>
       </BrowserRouter>
       <Toaster />

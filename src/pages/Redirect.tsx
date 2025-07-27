@@ -1,16 +1,26 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Loader2 } from "lucide-react";
 
 export default function Redirect() {
   const navigate = useNavigate();
+  const { slug } = useParams();
 
   useEffect(() => {
-    // Since we are using is.gd, we don't need a custom redirect page.
-    // is.gd handles the redirect for us.
-    // This page is now just a fallback.
+    if (slug) {
+      // Check if we have a local redirect stored
+      const redirects = JSON.parse(localStorage.getItem("shorty-redirects") || "{}");
+      const targetUrl = redirects[slug];
+      
+      if (targetUrl) {
+        window.location.href = targetUrl;
+        return;
+      }
+    }
+    
+    // If no local redirect found, go to home
     navigate("/");
-  }, [navigate]);
+  }, [navigate, slug]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center">
