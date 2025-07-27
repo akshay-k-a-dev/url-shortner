@@ -15,69 +15,163 @@ export default function Landing() {
     e.preventDefault();
     setIsLoading(true);
     setShortenedUrl("");
+    
     try {
-      let originalUrl = url;
-      if (!/^https?/i.test(originalUrl)) {
+      // Validate URL format
+      let originalUrl = url.trim();
+      if (!originalUrl) {
+        throw new Error("Please enter a URL");
+      }
+
+      // Add protocol if missing
+      if (!/^https?:\/\//i.test(originalUrl)) {
         originalUrl = `https://${originalUrl}`;
       }
-      
+
+      // Basic URL validation
+      try {
+        new URL(originalUrl);
+      } catch {
+        throw new Error("Please enter a valid URL");
+      }
+
       let newUrl;
       let isLocalUrl = false;
-      
+      let errorMessage = "";
+
       try {
         // Try our proxy endpoint first
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
         const response = await fetch('/api/shorten', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ url: originalUrl }),
+          signal: controller.signal,
         });
 
+        clearTimeout(timeoutId);
+
         if (!response.ok) {
-          throw new Error('Proxy failed');
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || `Server error: ${response.status}`);
         }
 
         const data = await response.json();
-        newUrl = data.shortUrl;
-        // is.gd URLs work directly, no local handling needed
+        
+        if (!data.shortUrl) {
+          throw new Error("Invalid response from shortening service");
+        }
+
+        newUrl = data.shortUrl.trim();
+        
+        // Validate the shortened URL
+        if (!newUrl.startsWith('http')) {
+          throw new Error("Invalid shortened URL received");
+        }
+
       } catch (proxyError) {
+        console.warn("Proxy API failed:", proxyError);
+        
+        if (proxyError.name === 'AbortError') {
+          errorMessage = "Request timed out. Using local fallback.";
+        } else if (proxyError.message.includes('fetch')) {
+          errorMessage = "Network error. Using local fallback.";
+        } else {
+          errorMessage = `API error: ${proxyError.message}. Using local fallback.`;
+        }
+
         // Fallback: create a local short URL
         const slug = Math.random().toString(36).substring(2, 8);
         newUrl = `${window.location.origin}/s/${slug}`;
         isLocalUrl = true;
         
         // Store the mapping for local redirect
-        const redirects = JSON.parse(localStorage.getItem("shorty-redirects") || "{}");
-        redirects[slug] = originalUrl;
-        localStorage.setItem("shorty-redirects", JSON.stringify(redirects));
+        try {
+          const redirects = JSON.parse(localStorage.getItem("shorty-redirects") || "{}");
+          redirects[slug] = originalUrl;
+          localStorage.setItem("shorty-redirects", JSON.stringify(redirects));
+        } catch (storageError) {
+          console.error("Failed to save redirect mapping:", storageError);
+          throw new Error("Failed to create fallback URL");
+        }
+
+        // Show warning toast for fallback
+        toast.warning(errorMessage);
       }
 
-      const storedUrls = JSON.parse(localStorage.getItem("shorty-urls") || "[]");
-      const newStoredUrl = {
-        original: originalUrl,
-        slug: isLocalUrl ? newUrl.split('/').pop() : newUrl.split('/').pop(),
-        shortUrl: newUrl,
-        clicks: 0,
-        isLocal: isLocalUrl,
-        _creationTime: Date.now(),
-        _id: Math.random().toString(36).substring(2, 12),
-      };
-      localStorage.setItem("shorty-urls", JSON.stringify([...storedUrls, newStoredUrl]));
+      // Store URL in history
+      try {
+        const storedUrls = JSON.parse(localStorage.getItem("shorty-urls") || "[]");
+        const newStoredUrl = {
+          original: originalUrl,
+          slug: isLocalUrl ? newUrl.split('/').pop() : newUrl.split('/').pop(),
+          shortUrl: newUrl,
+          clicks: 0,
+          isLocal: isLocalUrl,
+          _creationTime: Date.now(),
+          _id: Math.random().toString(36).substring(2, 12),
+        };
+        
+        // Limit stored URLs to prevent localStorage overflow
+        const updatedUrls = [newStoredUrl, ...storedUrls].slice(0, 100);
+        localStorage.setItem("shorty-urls", JSON.stringify(updatedUrls));
+      } catch (storageError) {
+        console.warn("Failed to save URL to history:", storageError);
+        // Don't throw error here as the URL was still shortened successfully
+      }
 
       setShortenedUrl(newUrl);
-      toast.success("URL shortened successfully!");
-    } catch (error: any) {
-      toast.error(error.message || "An unknown error occurred.");
-      console.error(error);
+      setUrl(""); // Clear input on success
+      
+      if (!errorMessage) {
+        toast.success("URL shortened successfully!");
+      }
+
+    } catch (error) {
+      console.error("URL shortening failed:", error);
+      
+      let userMessage = "Failed to shorten URL";
+      
+      if (error.message.includes("valid URL")) {
+        userMessage = error.message;
+      } else if (error.message.includes("network") || error.message.includes("fetch")) {
+        userMessage = "Network error. Please check your connection and try again.";
+      } else if (error.message.includes("timeout")) {
+        userMessage = "Request timed out. Please try again.";
+      } else if (error.message) {
+        userMessage = error.message;
+      }
+      
+      toast.error(userMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(shortenedUrl);
-    toast.success("Copied to clipboard!");
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(shortenedUrl);
+      toast.success("Copied to clipboard!");
+    } catch (error) {
+      console.error("Failed to copy:", error);
+      
+      // Fallback for older browsers
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = shortenedUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        toast.success("Copied to clipboard!");
+      } catch (fallbackError) {
+        toast.error("Failed to copy to clipboard. Please copy manually.");
+      }
+    }
   };
 
   return (
