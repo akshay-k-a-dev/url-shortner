@@ -8,14 +8,11 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Link as LinkIcon, Copy } from "lucide-react";
-import { AuthButton } from "@/components/auth/AuthButton";
-import { UserButton } from "@/components/auth/UserButton";
-import { useAuth } from "@/hooks/use-auth";
+import { Link } from "react-router";
 
 export default function Landing() {
   const [url, setUrl] = useState("");
   const [shortenedUrl, setShortenedUrl] = useState("");
-  const { isAuthenticated } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -61,10 +58,9 @@ export default function Landing() {
           <h1 className="text-xl font-bold tracking-tight">Shorty</h1>
         </div>
         <div className="flex items-center gap-4">
-            <p className="text-sm text-muted-foreground hidden md:block">
-                {isAuthenticated ? "Welcome back!" : "Login to see your links"}
-            </p>
-            {isAuthenticated ? <UserButton /> : <AuthButton />}
+            <Button asChild variant="outline">
+                <Link to="/dashboard">My Links</Link>
+            </Button>
         </div>
       </header>
       <main className="flex-1 flex flex-col items-center justify-center text-center p-4">
