@@ -22,6 +22,7 @@ export default function Landing() {
       }
       
       let newUrl;
+      let isLocalUrl = false;
       
       try {
         // Try our proxy endpoint first
@@ -39,37 +40,26 @@ export default function Landing() {
 
         const data = await response.json();
         newUrl = data.shortUrl;
+        // is.gd URLs work directly, no local handling needed
       } catch (proxyError) {
-        // Fallback: try direct API call with no-cors mode
-        try {
-          const encodedUrl = encodeURIComponent(originalUrl);
-          const apiUrl = `https://is.gd/create.php?format=simple&url=${encodedUrl}`;
-          
-          const response = await fetch(apiUrl, {
-            mode: 'no-cors'
-          });
-          
-          // Since we can't read the response in no-cors mode, 
-          // we'll generate a local short URL as fallback
-          throw new Error('Direct API not accessible');
-        } catch (directError) {
-          // Final fallback: create a local short URL
-          const slug = Math.random().toString(36).substring(2, 8);
-          newUrl = `${window.location.origin}/s/${slug}`;
-          
-          // Store the mapping for local redirect
-          const redirects = JSON.parse(localStorage.getItem("shorty-redirects") || "{}");
-          redirects[slug] = originalUrl;
-          localStorage.setItem("shorty-redirects", JSON.stringify(redirects));
-        }
+        // Fallback: create a local short URL
+        const slug = Math.random().toString(36).substring(2, 8);
+        newUrl = `${window.location.origin}/s/${slug}`;
+        isLocalUrl = true;
+        
+        // Store the mapping for local redirect
+        const redirects = JSON.parse(localStorage.getItem("shorty-redirects") || "{}");
+        redirects[slug] = originalUrl;
+        localStorage.setItem("shorty-redirects", JSON.stringify(redirects));
       }
 
       const storedUrls = JSON.parse(localStorage.getItem("shorty-urls") || "[]");
       const newStoredUrl = {
         original: originalUrl,
-        slug: newUrl.split('/').pop(),
+        slug: isLocalUrl ? newUrl.split('/').pop() : newUrl.split('/').pop(),
         shortUrl: newUrl,
         clicks: 0,
+        isLocal: isLocalUrl,
         _creationTime: Date.now(),
         _id: Math.random().toString(36).substring(2, 12),
       };
