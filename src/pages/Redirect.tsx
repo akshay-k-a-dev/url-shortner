@@ -8,16 +8,29 @@ export default function Redirect() {
 
   useEffect(() => {
     if (slug) {
-      const storedUrls = JSON.parse(localStorage.getItem("shorty-urls") || "[]");
-      const urlData = storedUrls.find((u: any) => u.slug === slug);
+      try {
+        const storedUrls = JSON.parse(localStorage.getItem("shorty-urls") || "[]");
+        const urlData = storedUrls.find((u: any) => u.slug === slug);
 
-      if (urlData) {
-        urlData.clicks += 1;
-        localStorage.setItem("shorty-urls", JSON.stringify(storedUrls));
-        window.location.href = urlData.original;
-      } else {
+        if (urlData && urlData.original) {
+          // Increment click count
+          const updatedUrls = storedUrls.map((u: any) => 
+            u.slug === slug ? { ...u, clicks: u.clicks + 1 } : u
+          );
+          localStorage.setItem("shorty-urls", JSON.stringify(updatedUrls));
+          
+          // Redirect to the original URL
+          window.location.replace(urlData.original);
+        } else {
+          // If URL not found, redirect to home page
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("Failed to parse URLs from localStorage", error);
         navigate("/");
       }
+    } else {
+      navigate("/");
     }
   }, [slug, navigate]);
 
