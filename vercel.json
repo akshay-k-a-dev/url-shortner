@@ -11,11 +11,12 @@
   ],
   "routes": [
     {
+      "src": "/s/.*",
+      "dest": "/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "rewrites": [
-    { "source": "/((?!api/|_next/|.*\\..*).*)", "destination": "/index.html" }
   ]
 }
